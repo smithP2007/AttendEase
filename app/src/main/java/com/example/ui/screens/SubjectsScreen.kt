@@ -57,6 +57,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -670,7 +671,38 @@ fun SubjectToggleItem(
                             }
 
                             Canvas(
-                                modifier = Modifier.size(34.dp)
+                                modifier = Modifier
+                                    .size(34.dp)
+                                    .drawBehind {
+                                        val r = size.minDimension / 2f
+                                        // Ambient soft drop-shadow
+                                        drawCircle(
+                                            brush = Brush.radialGradient(
+                                                colors = listOf(
+                                                    Color.Black.copy(alpha = 0.28f),
+                                                    Color.Transparent
+                                                ),
+                                                center = Offset(center.x, center.y + 2.dp.toPx()),
+                                                radius = r * 1.25f
+                                            ),
+                                            radius = r * 1.25f,
+                                            center = Offset(center.x, center.y + 2.dp.toPx())
+                                        )
+                                        // Outer glow
+                                        drawCircle(
+                                            brush = Brush.radialGradient(
+                                                colors = listOf(
+                                                    statusColor.copy(alpha = 0.35f),
+                                                    statusColor.copy(alpha = 0.12f),
+                                                    Color.Transparent
+                                                ),
+                                                center = center,
+                                                radius = r * 1.38f
+                                            ),
+                                            radius = r * 1.38f,
+                                            center = center
+                                        )
+                                    }
                             ) {
                                 val sw = 3.5.dp.toPx()
                                 val d = size.minDimension - sw

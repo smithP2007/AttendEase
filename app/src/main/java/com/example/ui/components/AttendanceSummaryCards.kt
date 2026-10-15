@@ -1,7 +1,6 @@
 package com.example.ui.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
@@ -35,9 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -76,7 +70,6 @@ fun AttendanceSummaryCards(
                 subtitle = if (stats.totalSafeBunks > 0) "Classes missable safely" else "No buffer available",
                 icon = Icons.Default.Shield,
                 accentColor = StatusSafe,
-                sparklinePoints = listOf(0.35f, 0.55f, 0.45f, 0.78f, 0.68f, 0.92f),
                 modifier = Modifier
                     .weight(1f)
                     .testTag("summary_card_safe_bunks"),
@@ -88,11 +81,6 @@ fun AttendanceSummaryCards(
                 subtitle = if (stats.subjectsInDanger > 0) "Below ${targetPercentage.toInt()}% target" else "All courses safe",
                 icon = Icons.Default.Warning,
                 accentColor = if (stats.subjectsInDanger > 0) StatusCritical else AccentAmberPrimary,
-                sparklinePoints = if (stats.subjectsInDanger > 0) {
-                    listOf(0.8f, 0.65f, 0.7f, 0.4f, 0.45f, 0.25f)
-                } else {
-                    listOf(0.4f, 0.52f, 0.48f, 0.7f, 0.75f, 0.88f)
-                },
                 modifier = Modifier
                     .weight(1f)
                     .testTag("summary_card_danger"),
@@ -111,7 +99,6 @@ fun AttendanceSummaryCards(
                 subtitle = if (stats.totalClassesNeeded > 0) "Consecutive for ${targetPercentage.toInt()}%" else "Target requirement met",
                 icon = Icons.AutoMirrored.Filled.TrendingUp,
                 accentColor = if (stats.totalClassesNeeded > 0) StatusWarning else StatusSafe,
-                sparklinePoints = listOf(0.25f, 0.48f, 0.42f, 0.68f, 0.62f, 0.85f),
                 modifier = Modifier
                     .weight(1f)
                     .testTag("summary_card_needed"),
@@ -123,7 +110,6 @@ fun AttendanceSummaryCards(
                 subtitle = "${String.format(java.util.Locale.US, "%.1f", stats.overallPercentage)}% semester rate",
                 icon = Icons.Default.School,
                 accentColor = AccentCyanSecondary,
-                sparklinePoints = listOf(0.3f, 0.45f, 0.6f, 0.55f, 0.8f, 0.95f),
                 modifier = Modifier
                     .weight(1f)
                     .testTag("summary_card_attended"),
@@ -140,7 +126,6 @@ fun MaterialSummaryCard(
     subtitle: String,
     icon: ImageVector,
     accentColor: Color,
-    sparklinePoints: List<Float> = listOf(0.3f, 0.55f, 0.45f, 0.75f, 0.65f, 0.9f),
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null
 ) {
@@ -229,114 +214,33 @@ fun MaterialSummaryCard(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                // Bottom Row: Metric + Title on left, Muzli Smooth Bezier Wave Sparkline on right
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Bottom
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = value,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontSize = 21.sp,
-                            fontWeight = FontWeight.Black,
-                            letterSpacing = (-0.5).sp
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = title,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            maxLines = 1
-                        )
-                        Spacer(modifier = Modifier.height(1.dp))
-                        Text(
-                            text = subtitle,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.78f),
-                            fontSize = 9.5.sp,
-                            fontWeight = FontWeight.Normal,
-                            maxLines = 1
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(6.dp))
-
-                    // Muzli Smooth Bezier Sparkline Curve
-                    MuzliSparkline(
-                        points = sparklinePoints,
-                        color = accentColor,
-                        modifier = Modifier
-                            .width(46.dp)
-                            .height(24.dp)
+                // Bottom Row: Metric, Title, and Subtitle
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = value,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 21.sp,
+                        fontWeight = FontWeight.Black,
+                        letterSpacing = (-0.5).sp
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = title,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1
+                    )
+                    Spacer(modifier = Modifier.height(1.dp))
+                    Text(
+                        text = subtitle,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.78f),
+                        fontSize = 9.5.sp,
+                        fontWeight = FontWeight.Normal,
+                        maxLines = 1
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-fun MuzliSparkline(
-    points: List<Float>,
-    color: Color,
-    modifier: Modifier = Modifier
-) {
-    if (points.size < 2) return
-    Canvas(modifier = modifier) {
-        val w = size.width
-        val h = size.height
-        val stepX = w / (points.size - 1).coerceAtLeast(1)
-
-        val coords = points.mapIndexed { idx, value ->
-            val clamped = value.coerceIn(0.08f, 0.95f)
-            Offset(x = idx * stepX, y = h * (1f - clamped))
-        }
-
-        val strokePath = Path().apply {
-            moveTo(coords.first().x, coords.first().y)
-            for (i in 0 until coords.size - 1) {
-                val p0 = coords[i]
-                val p1 = coords[i + 1]
-                val controlX1 = p0.x + (p1.x - p0.x) * 0.5f
-                val controlY1 = p0.y
-                val controlX2 = p0.x + (p1.x - p0.x) * 0.5f
-                val controlY2 = p1.y
-                cubicTo(controlX1, controlY1, controlX2, controlY2, p1.x, p1.y)
-            }
-        }
-
-        val fillPath = Path().apply {
-            addPath(strokePath)
-            lineTo(w, h)
-            lineTo(0f, h)
-            close()
-        }
-
-        drawPath(
-            path = fillPath,
-            brush = Brush.verticalGradient(
-                colors = listOf(color.copy(alpha = 0.25f), Color.Transparent)
-            )
-        )
-
-        drawPath(
-            path = strokePath,
-            color = color,
-            style = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round)
-        )
-
-        val last = coords.last()
-        drawCircle(
-            color = color.copy(alpha = 0.35f),
-            radius = 4.5.dp.toPx(),
-            center = last
-        )
-        drawCircle(
-            color = color,
-            radius = 2.2.dp.toPx(),
-            center = last
-        )
     }
 }

@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -258,7 +259,38 @@ fun SubjectCard(
                             }
 
                             Canvas(
-                                modifier = Modifier.size(36.dp)
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .drawBehind {
+                                        val r = size.minDimension / 2f
+                                        // Ambient soft drop-shadow
+                                        drawCircle(
+                                            brush = Brush.radialGradient(
+                                                colors = listOf(
+                                                    Color.Black.copy(alpha = 0.28f),
+                                                    Color.Transparent
+                                                ),
+                                                center = Offset(center.x, center.y + 2.dp.toPx()),
+                                                radius = r * 1.25f
+                                            ),
+                                            radius = r * 1.25f,
+                                            center = Offset(center.x, center.y + 2.dp.toPx())
+                                        )
+                                        // Outer glow
+                                        drawCircle(
+                                            brush = Brush.radialGradient(
+                                                colors = listOf(
+                                                    statusColor.copy(alpha = 0.35f),
+                                                    statusColor.copy(alpha = 0.12f),
+                                                    Color.Transparent
+                                                ),
+                                                center = center,
+                                                radius = r * 1.38f
+                                            ),
+                                            radius = r * 1.38f,
+                                            center = center
+                                        )
+                                    }
                             ) {
                                 val sw = 3.5.dp.toPx()
                                 val d = size.minDimension - sw
@@ -311,7 +343,7 @@ fun SubjectCard(
                 if (!isCompact) {
                     Spacer(modifier = Modifier.height(9.dp))
 
-                    // Safe Bunks / Classes Needed Callout + Mini Sparkline
+                    // Safe Bunks / Classes Needed Callout
                     Surface(
                         shape = RoundedCornerShape(10.dp),
                         color = if (calc.safeBunks > 0) StatusSafe.copy(alpha = 0.08f) else StatusCritical.copy(alpha = 0.08f),
@@ -321,12 +353,10 @@ fun SubjectCard(
                         ),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Row(
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 10.dp, vertical = 6.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                                .padding(horizontal = 10.dp, vertical = 6.dp)
                         ) {
                             Text(
                                 text = if (calc.safeBunks > 0) {
@@ -338,19 +368,7 @@ fun SubjectCard(
                                 },
                                 color = if (calc.safeBunks > 0) StatusSafe else StatusCritical,
                                 fontSize = 11.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                modifier = Modifier.weight(1f)
-                            )
-                            MuzliSparkline(
-                                points = if (calc.safeBunks > 0) {
-                                    listOf(0.4f, 0.55f, 0.5f, 0.75f, 0.9f)
-                                } else {
-                                    listOf(0.75f, 0.6f, 0.65f, 0.45f, 0.35f)
-                                },
-                                color = if (calc.safeBunks > 0) StatusSafe else StatusCritical,
-                                modifier = Modifier
-                                    .width(36.dp)
-                                    .height(14.dp)
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
                     }

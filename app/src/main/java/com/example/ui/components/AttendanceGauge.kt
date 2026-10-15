@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -194,6 +195,37 @@ fun AttendanceGauge(
                     Canvas(
                         modifier = Modifier
                             .size(size)
+                            .drawBehind {
+                                val radius = this.size.minDimension / 2f
+                                // Ambient soft drop-shadow behind the circular progress bar
+                                drawCircle(
+                                    brush = Brush.radialGradient(
+                                        colors = listOf(
+                                            Color.Black.copy(alpha = 0.38f),
+                                            Color.Black.copy(alpha = 0.12f),
+                                            Color.Transparent
+                                        ),
+                                        center = Offset(this.center.x, this.center.y + 4.dp.toPx()),
+                                        radius = radius * 1.15f
+                                    ),
+                                    radius = radius * 1.15f,
+                                    center = Offset(this.center.x, this.center.y + 4.dp.toPx())
+                                )
+                                // Vibrant outer glow effect to make it stand out against the background
+                                drawCircle(
+                                    brush = Brush.radialGradient(
+                                        colors = listOf(
+                                            glowColor.copy(alpha = 0.40f),
+                                            glowColor.copy(alpha = 0.16f),
+                                            Color.Transparent
+                                        ),
+                                        center = this.center,
+                                        radius = radius * 1.30f
+                                    ),
+                                    radius = radius * 1.30f,
+                                    center = this.center
+                                )
+                            }
                             .graphicsLayer {
                                 compositingStrategy = CompositingStrategy.Auto
                             }
