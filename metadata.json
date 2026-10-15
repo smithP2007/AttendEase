@@ -1,0 +1,6 @@
+{
+  "name": "AttendEase",
+  "description": "Minimalist Material You student attendance tracker with 75% calculator, timetable, smart settings, and AI academic advisor.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

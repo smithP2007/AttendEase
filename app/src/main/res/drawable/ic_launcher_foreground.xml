@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="54">
+        <!-- Outer Glowing Accent Circle (Attendance Gauge Ring) -->
+        <path
+            android:strokeColor="#1E293B"
+            android:strokeWidth="5"
+            android:strokeLineCap="round"
+            android:pathData="M28,54 A26,26 0 1,1 80,54 A26,26 0 0,1 54,80" />
+        <path
+            android:strokeColor="#00E676"
+            android:strokeWidth="5"
+            android:strokeLineCap="round"
+            android:pathData="M28,54 A26,26 0 1,1 80,54" />
+
+        <!-- Graduation Cap Top Diamond -->
+        <path
+            android:fillColor="#818CF8"
+            android:pathData="M54,30 L74,39 L54,48 L34,39 Z" />
+
+        <!-- Graduation Cap Skull Band -->
+        <path
+            android:fillColor="#6366F1"
+            android:pathData="M40,43.5 L40,51 C40,55 68,55 68,51 L68,43.5 L54,49.5 Z" />
+
+        <!-- Tassel String and Bead -->
+        <path
+            android:strokeColor="#FCD34D"
+            android:strokeWidth="1.8"
+            android:strokeLineCap="round"
+            android:pathData="M70,40.5 L74,48 L74,53" />
+
+        <!-- Attendance Calendar Card Base -->
+        <path
+            android:fillColor="#0F172A"
+            android:pathData="M37,56 H71 C73.2,56 75,57.8 75,60 V76 C75,78.2 73.2,80 71,80 H37 C34.8,80 33,78.2 33,76 V60 C33,57.8 34.8,56 37,56 Z" />
+        <path
+            android:strokeColor="#334155"
+            android:strokeWidth="1.5"
+            android:pathData="M37,56 H71 C73.2,56 75,57.8 75,60 V76 C75,78.2 73.2,80 71,80 H37 C34.8,80 33,78.2 33,76 V60 C33,57.8 34.8,56 37,56 Z" />
+
+        <!-- Neon Checkmark for 100% Attended / Safe status -->
+        <path
+            android:strokeColor="#00E676"
+            android:strokeWidth="3.2"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M44,68 L51,74 L65,62" />
+    </group>
+</vector>
