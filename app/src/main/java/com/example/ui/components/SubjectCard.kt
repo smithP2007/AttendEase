@@ -234,13 +234,38 @@ fun SubjectCard(
                             modifier = Modifier.size(36.dp)
                         ) {
                             val ringTrack = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.6f)
-                            Canvas(modifier = Modifier.size(36.dp)) {
+                            val diamondColors = remember(statusColor, calc.percentage, targetPercentage) {
+                                if (calc.percentage >= targetPercentage) {
+                                    listOf(
+                                        Color(0xFF00E676), // Bright Emerald
+                                        Color(0xFF00E5FF), // Diamond Aqua highlight
+                                        Color(0xFF00B0FF)  // Electric Blue
+                                    )
+                                } else {
+                                    listOf(
+                                        statusColor.copy(alpha = 0.7f),
+                                        statusColor,
+                                        statusColor.copy(alpha = 0.9f)
+                                    )
+                                }
+                            }
+                            val ringLinearBrush = remember(diamondColors) {
+                                Brush.linearGradient(
+                                    colors = diamondColors,
+                                    start = Offset.Zero,
+                                    end = Offset.Infinite
+                                )
+                            }
+
+                            Canvas(
+                                modifier = Modifier.size(36.dp)
+                            ) {
                                 val sw = 3.5.dp.toPx()
                                 val d = size.minDimension - sw
                                 val tl = Offset((size.width - d) / 2f, (size.height - d) / 2f)
                                 drawArc(
                                     color = ringTrack,
-                                    startAngle = 0f,
+                                    startAngle = 270f,
                                     sweepAngle = 360f,
                                     useCenter = false,
                                     topLeft = tl,
@@ -250,15 +275,8 @@ fun SubjectCard(
                                 if (animatedProgress > 0.005f) {
                                     val sweep = animatedProgress * 360f
                                     drawArc(
-                                        brush = Brush.sweepGradient(
-                                            colorStops = arrayOf(
-                                                0.0f to statusColor.copy(alpha = 0.55f),
-                                                (sweep / 360f).coerceIn(0.01f, 1.0f) to statusColor,
-                                                1.0f to statusColor
-                                            ),
-                                            center = this.center
-                                        ),
-                                        startAngle = -90f,
+                                        brush = ringLinearBrush,
+                                        startAngle = 270f,
                                         sweepAngle = sweep,
                                         useCenter = false,
                                         topLeft = tl,

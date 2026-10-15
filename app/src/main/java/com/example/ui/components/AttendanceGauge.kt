@@ -26,6 +26,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -137,6 +138,59 @@ fun AttendanceGauge(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.size(size)
                 ) {
+                    val outerColors = remember(percentage, targetPercentage, glowColor) {
+                        if (percentage >= targetPercentage) {
+                            listOf(
+                                Color(0xFF00E676), // Bright Emerald
+                                Color(0xFF00E5FF), // Diamond Aqua highlight
+                                Color(0xFF00B0FF)  // Electric Cyan
+                            )
+                        } else {
+                            listOf(
+                                glowColor.copy(alpha = 0.75f),
+                                glowColor,
+                                glowColor.copy(alpha = 0.9f)
+                            )
+                        }
+                    }
+                    val outerLinearBrush = remember(outerColors) {
+                        Brush.linearGradient(
+                            colors = outerColors,
+                            start = Offset.Zero,
+                            end = Offset.Infinite
+                        )
+                    }
+
+                    val middleColors = remember(secondaryRingColor) {
+                        listOf(
+                            secondaryRingColor.copy(alpha = 0.7f),
+                            Color(0xFF00E5FF),
+                            secondaryRingColor
+                        )
+                    }
+                    val middleLinearBrush = remember(middleColors) {
+                        Brush.linearGradient(
+                            colors = middleColors,
+                            start = Offset.Zero,
+                            end = Offset.Infinite
+                        )
+                    }
+
+                    val innerColors = remember(innerRingColor) {
+                        listOf(
+                            innerRingColor.copy(alpha = 0.7f),
+                            Color(0xFF48CAE4),
+                            innerRingColor
+                        )
+                    }
+                    val innerLinearBrush = remember(innerColors) {
+                        Brush.linearGradient(
+                            colors = innerColors,
+                            start = Offset.Zero,
+                            end = Offset.Infinite
+                        )
+                    }
+
                     Canvas(
                         modifier = Modifier
                             .size(size)
@@ -147,14 +201,12 @@ fun AttendanceGauge(
                         val strokePx = strokeWidth.toPx()
                         val ringGap = strokePx * 1.38f
 
-                        val centerOffset = this.center
-
                         // Ring 1 (Outer): Overall Attendance %
                         val d1 = minOf(this.size.width, this.size.height) - strokePx
                         val tl1 = Offset((this.size.width - d1) / 2f, (this.size.height - d1) / 2f)
                         drawArc(
                             color = trackColor,
-                            startAngle = 0f,
+                            startAngle = 270f,
                             sweepAngle = 360f,
                             useCenter = false,
                             topLeft = tl1,
@@ -164,16 +216,8 @@ fun AttendanceGauge(
                         if (animatedOuter > 0.005f) {
                             val sweep1 = animatedOuter * 360f
                             drawArc(
-                                brush = Brush.sweepGradient(
-                                    colorStops = arrayOf(
-                                        0.0f to glowColor.copy(alpha = 0.65f),
-                                        (sweep1 / 720f).coerceIn(0.1f, 0.45f) to secondaryRingColor,
-                                        (sweep1 / 360f).coerceIn(0.01f, 1.0f) to glowColor,
-                                        1.0f to glowColor
-                                    ),
-                                    center = centerOffset
-                                ),
-                                startAngle = -90f,
+                                brush = outerLinearBrush,
+                                startAngle = 270f,
                                 sweepAngle = sweep1,
                                 useCenter = false,
                                 topLeft = tl1,
@@ -187,7 +231,7 @@ fun AttendanceGauge(
                         val tl2 = Offset((this.size.width - d2) / 2f, (this.size.height - d2) / 2f)
                         drawArc(
                             color = trackColor.copy(alpha = 0.38f),
-                            startAngle = 0f,
+                            startAngle = 270f,
                             sweepAngle = 360f,
                             useCenter = false,
                             topLeft = tl2,
@@ -195,17 +239,10 @@ fun AttendanceGauge(
                             style = Stroke(width = strokePx * 0.85f)
                         )
                         if (animatedMiddle > 0.005f) {
-                            val sweep2 = animatedMiddle * 310f
+                            val sweep2 = animatedMiddle * 360f
                             drawArc(
-                                brush = Brush.sweepGradient(
-                                    colorStops = arrayOf(
-                                        0.0f to secondaryRingColor.copy(alpha = 0.55f),
-                                        (sweep2 / 360f).coerceIn(0.01f, 1.0f) to secondaryRingColor,
-                                        1.0f to secondaryRingColor
-                                    ),
-                                    center = centerOffset
-                                ),
-                                startAngle = -90f,
+                                brush = middleLinearBrush,
+                                startAngle = 270f,
                                 sweepAngle = sweep2,
                                 useCenter = false,
                                 topLeft = tl2,
@@ -219,7 +256,7 @@ fun AttendanceGauge(
                         val tl3 = Offset((this.size.width - d3) / 2f, (this.size.height - d3) / 2f)
                         drawArc(
                             color = trackColor.copy(alpha = 0.28f),
-                            startAngle = 0f,
+                            startAngle = 270f,
                             sweepAngle = 360f,
                             useCenter = false,
                             topLeft = tl3,
@@ -227,17 +264,10 @@ fun AttendanceGauge(
                             style = Stroke(width = strokePx * 0.72f)
                         )
                         if (animatedInner > 0.005f) {
-                            val sweep3 = animatedInner * 270f
+                            val sweep3 = animatedInner * 360f
                             drawArc(
-                                brush = Brush.sweepGradient(
-                                    colorStops = arrayOf(
-                                        0.0f to innerRingColor.copy(alpha = 0.5f),
-                                        (sweep3 / 360f).coerceIn(0.01f, 1.0f) to innerRingColor,
-                                        1.0f to innerRingColor
-                                    ),
-                                    center = centerOffset
-                                ),
-                                startAngle = -90f,
+                                brush = innerLinearBrush,
+                                startAngle = 270f,
                                 sweepAngle = sweep3,
                                 useCenter = false,
                                 topLeft = tl3,
